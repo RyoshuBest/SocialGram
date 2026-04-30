@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050310">
+<title>Socialgram — Connect, Share, Glow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ AURORA FIELD + GRAIN ============ -->
+<div class="aurora-field" aria-hidden="true">
+  <div class="aurora-orb"></div>
+  <div class="aurora-orb"></div>
+  <div class="aurora-orb"></div>
+  <div class="aurora-orb"></div>
+  <div class="aurora-orb"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ CUSTOM CURSOR ============ -->
+<div class="cursor-ring" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+
+<!-- ============ AUTH ============ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-mark">
+        <svg viewBox="0 0 40 40" width="34" height="34">
+          <path d="M13 25c0 2.5 2.5 4 5.5 4s5.5-1.5 5.5-4-2-3.5-5.5-4.5-6-2-6-5 2.5-4 5.5-4 5.5 1.5 5.5 4" stroke="#fff" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <h1>Socialgram</h1>
+      <p>Connect · Share · Glow</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login')" data-magnetic="soft">Accedi</button>
+      <button class="auth-tab" onclick="switchAuth('register')" data-magnetic="soft">Registrati</button>
+      <div class="auth-tab-indicator"></div>
+    </div>
+    <form id="login-form" onsubmit="event.preventDefault();login()">
+      <div class="form-group"><label>Username o email</label><input id="login-user" type="text" autocomplete="username" placeholder="sofia_r"></div>
+      <div class="form-group"><label>Password</label><input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+      <button type="submit" class="btn-primary" data-magnetic="strong">Accedi</button>
+      <button type="button" class="btn-primary" style="margin-top:10px;background:var(--bg-2);color:var(--text-0);box-shadow:none;border:1px solid var(--hairline-hi)" onclick="loginDemo()">✨ Prova come Sofia (demo)</button>
+    </form>
+    <form id="register-form" style="display:none" onsubmit="event.preventDefault();register()">
+      <div class="form-group"><label>Nome completo</label><input id="reg-name" type="text" placeholder="Mario Rossi"></div>
+      <div class="form-group"><label>Username</label><input id="reg-user" type="text" placeholder="mario_r"></div>
+      <div class="form-group"><label>Email</label><input id="reg-email" type="email" placeholder="mario@email.it"></div>
+      <div class="form-group"><label>Password</label><input id="reg-pass" type="password" placeholder="min. 6 caratteri"></div>
+      <button type="submit" class="btn-primary" data-magnetic="strong">Crea account</button>
+    </form>
+    <p class="auth-footer">Demo locale · I dati restano sul tuo dispositivo</p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+
+  <header class="topbar">
+    <div class="topbar-logo" onclick="showPage('feed')">
+      <div class="topbar-logo-mark">
+        <svg viewBox="0 0 40 40" width="22" height="22">
+          <path d="M13 25c0 2.5 2.5 4 5.5 4s5.5-1.5 5.5-4-2-3.5-5.5-4.5-6-2-6-5 2.5-4 5.5-4 5.5 1.5 5.5 4" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <span>Socialgram</span>
+    </div>
+    <div class="topbar-search">
+      <span class="topbar-search-icon" id="search-icon-slot"></span>
+      <input id="search-input" class="topbar-search-input" type="text" placeholder="Cerca persone, post, #hashtag..." oninput="liveSearch(this.value)">
+    </div>
+    <div class="topbar-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Tema"><span class="theme-toggle-knob" id="theme-knob"></span></button>
+      <button class="icon-btn" onclick="showPage('messages')" aria-label="Messaggi" id="msg-btn"></button>
+      <div style="position:relative">
+        <button class="icon-btn" onclick="showPage('notifications')" aria-label="Notifiche" id="notif-btn"></button>
+        <span id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--bloom);color:#fff;font-size:.62rem;font-weight:700;border-radius:999px;padding:2px 5px;min-width:16px;text-align:center;line-height:1;pointer-events:none;font-family:'JetBrains Mono',monospace;box-shadow:0 0 0 2px var(--bg-0)">0</span>
+      </div>
+      <button class="topbar-avatar" id="topbar-avatar" onclick="showPage('myprofile')" aria-label="Profilo"></button>
+    </div>
+  </header>
+
+  <div class="main-layout">
+
+    <aside class="sidebar">
+      <nav>
+        <div class="nav-item active" id="nav-feed" onclick="showPage('feed')"><span class="nav-icon"></span><span>Home</span></div>
+        <div class="nav-item" id="nav-explore" onclick="showPage('explore')"><span class="nav-icon"></span><span>Esplora</span></div>
+        <div class="nav-item" id="nav-notifications" onclick="showPage('notifications')"><span class="nav-icon"></span><span>Notifiche</span></div>
+        <div class="nav-item" id="nav-messages" onclick="showPage('messages')"><span class="nav-icon"></span><span>Messaggi</span></div>
+        <div class="nav-item" id="nav-bookmarks" onclick="showPage('bookmarks')"><span class="nav-icon"></span><span>Salvati</span></div>
+        <div class="nav-item" id="nav-myprofile" onclick="showPage('myprofile')"><span class="nav-icon"></span><span>Profilo</span></div>
+      </nav>
+      <button class="btn-post" onclick="openPostModal()" data-magnetic="strong"><span id="btn-post-icon"></span>Pubblica</button>
+      <div class="sidebar-user" onclick="showPage('myprofile')">
+        <div id="sidebar-user-avatar"></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebar-user-name"></div>
+          <div class="sidebar-user-handle" id="sidebar-user-handle"></div>
+        </div>
+        <button class="sidebar-user-menu" onclick="event.stopPropagation();logout()" aria-label="Esci" id="logout-btn"></button>
+      </div>
+    </aside>
+
+    <main class="feed">
+
+      <div id="page-feed">
+        <div class="feed-tabs">
+          <button class="feed-tab active" data-filter="all" onclick="setFeedFilter('all')" data-magnetic="soft">Per te</button>
+          <button class="feed-tab" data-filter="following" onclick="setFeedFilter('following')" data-magnetic="soft">Seguiti</button>
+        </div>
+
+        <div class="card stories-card">
+          <div class="stories-bar" id="stories-bar"></div>
+        </div>
+
+        <div class="card">
+          <div class="post-creator">
+            <div class="post-creator-top">
+              <div id="creator-avatar"></div>
+              <textarea id="quick-post-text" class="post-input" placeholder="Cosa stai pensando?" maxlength="500" oninput="updateCounter('quick-post-text','quick-counter');autoGrow(this)"></textarea>
+            </div>
+            <div id="quick-media-preview" class="media-preview" style="display:none"></div>
+            <div class="post-creator-bottom">
+              <div class="post-actions-left">
+                <label class="post-action-btn" title="Foto"><input type="file" accept="image/*" style="display:none" onchange="previewMedia(this,'image','quick')"><span class="tool-ico-1"></span></label>
+                <label class="post-action-btn" title="Video"><input type="file" accept="video/*" style="display:none" onchange="previewMedia(this,'video','quick')"><span class="tool-ico-2"></span></label>
+                <button class="post-action-btn" title="Emoji" onclick="toggleEmojiPicker('quick-post-text', this)"><span class="tool-ico-3"></span></button>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span id="quick-counter" class="post-counter">0/500</span>
+                <button class="btn-submit" onclick="createPost('quick')" data-magnetic="strong">Pubblica</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="posts-container"></div>
+      </div>
+
+      <div id="page-explore" style="display:none">
+        <div class="page-title-block"><h1>Esplora</h1><p>I post più popolari del momento</p></div>
+        <div id="explore-grid"></div>
+      </div>
+
+      <div id="page-notifications" style="display:none">
+        <div class="page-title-block"><h1>Notifiche</h1></div>
+        <div id="notifications-list"></div>
+      </div>
+
+      <div id="page-bookmarks" style="display:none">
+        <div class="page-title-block"><h1>Salvati</h1><p>Solo tu puoi vederli</p></div>
+        <div id="bookmarks-list"></div>
+      </div>
+
+      <div id="page-messages" style="display:none">
+        <div class="page-title-block"><h1>Messaggi</h1></div>
+        <div id="messages-content"></div>
+      </div>
+
+      <div id="page-myprofile" style="display:none">
+        <div id="my-profile-content"></div>
+      </div>
+
+      <div id="page-userprofile" style="display:none">
+        <div id="user-profile-content"></div>
+      </div>
+
+      <div id="page-search" style="display:none">
+        <div class="page-title-block"><h1>Risultati</h1></div>
+        <div id="search-results"></div>
+      </div>
+
+      <div id="page-hashtag" style="display:none"></div>
+    </main>
+
+    <aside class="right-panel">
+      <div class="widget">
+        <div class="widget-title"><span class="widget-title-icon" id="trending-ico"></span>In tendenza</div>
+        <div id="trending-list"></div>
+      </div>
+      <div class="widget">
+        <div class="widget-title"><span class="widget-title-icon" id="suggest-ico"></span>Da seguire</div>
+        <div id="suggestions-list"></div>
+      </div>
+      <div style="padding:0 4px;color:var(--text-3);font-size:.74rem;display:flex;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;letter-spacing:.04em">
+        <span>© Socialgram</span><span>·</span><span>Privacy</span><span>·</span><span>Termini</span>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ============ MOBILE BOTTOM NAV ============ -->
+<nav id="bottom-nav" aria-label="Menu mobile">
+  <button class="bottom-nav-btn active" onclick="showPage('feed')" aria-label="Home"><span class="bn-ico" data-ico="homeFill"></span><span>Home</span></button>
+  <button class="bottom-nav-btn" onclick="showPage('explore')" aria-label="Esplora"><span class="bn-ico" data-ico="compass"></span><span>Esplora</span></button>
+  <button class="bottom-nav-btn bottom-nav-post" onclick="openPostModal()" aria-label="Pubblica"><span class="bn-ico" data-ico="plus"></span><span>Post</span></button>
+  <button class="bottom-nav-btn" onclick="showPage('notifications')" aria-label="Notifiche"><span class="bn-ico" data-ico="bell"></span><span>Avvisi</span></button>
+  <button class="bottom-nav-btn" onclick="showPage('myprofile')" aria-label="Profilo"><span class="bn-ico" data-ico="user"></span><span>Profilo</span></button>
+</nav>
+
+<!-- ============ MODALS ============ -->
+
+<div class="modal-overlay" id="post-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Crea post</h3>
+      <button class="modal-close" onclick="closeModal('post-modal')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="post-creator-top">
+        <div id="modal-creator-avatar"></div>
+        <textarea id="modal-post-text" class="post-input" placeholder="Condividi qualcosa..." maxlength="500" oninput="updateCounter('modal-post-text','modal-counter');autoGrow(this)"></textarea>
+      </div>
+      <div id="modal-media-preview" class="media-preview" style="display:none"></div>
+      <div class="post-creator-bottom">
+        <div class="post-actions-left">
+          <label class="post-action-btn" title="Foto"><input type="file" accept="image/*" style="display:none" onchange="previewMedia(this,'image','modal')"><span class="tool-ico-1"></span></label>
+          <label class="post-action-btn" title="Video"><input type="file" accept="video/*" style="display:none" onchange="previewMedia(this,'video','modal')"><span class="tool-ico-2"></span></label>
+          <button class="post-action-btn" title="Emoji" onclick="toggleEmojiPicker('modal-post-text', this)"><span class="tool-ico-3"></span></button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="modal-counter" class="post-counter">0/500</span>
+          <button class="btn-submit" onclick="createPost('modal')" data-magnetic="strong">Pubblica</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="comments-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Commenti</h3>
+      <button class="modal-close" onclick="closeModal('comments-modal')"></button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div id="comments-content"></div>
+      <div id="reply-context-bar"></div>
+      <div class="comment-input-row">
+        <div id="comment-avatar"></div>
+        <input id="comment-input" class="comment-input" placeholder="Aggiungi un commento..." onkeydown="if(event.key==='Enter')submitComment()">
+        <button class="btn-submit" onclick="submitComment()" id="send-btn" data-magnetic="soft"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-profile-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Modifica profilo</h3>
+      <button class="modal-close" onclick="closeModal('edit-profile-modal')"></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+        <div id="edit-avatar-preview"></div>
+        <label class="btn-primary" style="cursor:pointer;display:inline-block;width:auto;padding:10px 18px;font-size:.86rem;margin-top:0">Cambia foto<input type="file" accept="image/*" style="display:none" onchange="previewEditAvatar(this)"></label>
+      </div>
+      <div class="form-group"><label>Nome</label><input id="edit-name" type="text"></div>
+      <div class="form-group"><label>Username</label><input id="edit-username" type="text"></div>
+      <div class="form-group"><label>Bio</label><textarea id="edit-bio" maxlength="160" rows="3"></textarea></div>
+      <div class="form-group"><label>Località</label><input id="edit-location" type="text" placeholder="Roma, IT"></div>
+      <div class="form-group"><label>Sito web</label><input id="edit-website" type="text" placeholder="esempio.com"></div>
+      <button class="btn-primary" onclick="saveProfile()" data-magnetic="strong">Salva modifiche</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="followers-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="followers-modal-title">Follower</h3>
+      <button class="modal-close" onclick="closeModal('followers-modal')"></button>
+    </div>
+    <div class="modal-body" id="followers-list"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="story-modal">
+  <div id="story-content"></div>
+</div>
+
+<div id="toast" class="toast">
+  <span id="toast-icon" class="toast-icon"></span>
+  <span id="toast-msg"></span>
+</div>
+
+<script src="icons.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const fill = (sel, name) => { const el = typeof sel==='string' ? document.querySelector(sel) : sel; if(el){ el.innerHTML = ICONS[name]; }};
+    fill('#search-icon-slot','search');
+    fill('#msg-btn','message');
+    fill('#notif-btn','bell');
+    fill('#logout-btn','logout');
+    fill('#btn-post-icon','plus');
+    fill('#trending-ico','trending');
+    fill('#suggest-ico','sparkles');
+    fill('#send-btn','send');
+    const navIcons = ['homeFill','compass','bell','message','bookmark','user'];
+    document.querySelectorAll('.nav-item .nav-icon').forEach((el,i)=>{ el.innerHTML = ICONS[navIcons[i]]||''; });
+    document.querySelectorAll('.tool-ico-1').forEach(el=>el.innerHTML = ICONS.image);
+    document.querySelectorAll('.tool-ico-2').forEach(el=>el.innerHTML = ICONS.video);
+    document.querySelectorAll('.tool-ico-3').forEach(el=>el.innerHTML = ICONS.smile);
+    document.querySelectorAll('.modal-close').forEach(el=>{ if(!el.innerHTML.trim()) el.innerHTML = ICONS.close; });
+    document.querySelectorAll('.bn-ico').forEach(el=>{ const k=el.dataset.ico; if(k && ICONS[k]) el.innerHTML = ICONS[k]; });
+  });
+</script>
+<script src="app.js"></script>
+
+</body>
+</html>
