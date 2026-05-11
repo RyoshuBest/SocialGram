@@ -1,2 +1,2 @@
 # SocialGram
-idk
+The future of Social
